@@ -1,0 +1,40 @@
+plugins {
+	id 'java'
+}
+
+group = 'org.wycliffeassociates'
+version = '0.2.0-SNAPSHOT'
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
+repositories {
+	mavenCentral()
+	maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
+	//implementation 'com.esotericsoftware:kryonet:2.22.0-RC1'
+	//implementation 'com.esotericsoftware:kryonet:2.23.1'
+	implementation 'com.github.mXaln:kryonet:2.23.1'
+}
+
+ext.mainClassName = 'org.wycliffeassociates.demo.PositionClient'
+ext.appName = 'client.0.2.jar'
+
+//ext.mainClassName = 'org.wycliffeassociates.demo.PositionServer'
+//ext.appName = 'server.0.2.jar'
+
+jar {
+	archiveName = appName
+	manifest {
+		attributes (
+				"Class-Path": configurations.compile.collect { it.getName() }.join(" "),
+				'Main-Class' : mainClassName
+		)
+	}
+
+	from {
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+}
